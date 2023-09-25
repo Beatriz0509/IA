@@ -26,7 +26,7 @@ def concat(l1, l2):
 	if not l2:
 		return l1
 	else:
-		return (l1[0] + concat(l1[1:], l2))
+		return [l1[0]] + concat(l1[1:], l2)
 
 #Exercicio 1.5
 def inverte(lista):
@@ -47,7 +47,7 @@ def concat_listas(lista):
 	if not lista:
 		return []
 	else: 
-		return lista[0] + concat_listas(lista[1])
+		return lista[0] + concat_listas(lista[1:])
 
 
 #Exercicio 1.8
@@ -61,7 +61,7 @@ def substitui(lista, original, novo):
 
 #Exercicio 1.9
 def fusao_ordenada(lista1, lista2): 
-	if not lista1 or lista2:
+	if not lista1 or not lista2:
 		return concat(lista1, lista2)
 	else:
 		if (lista1[0] <= lista2[0]):
@@ -70,21 +70,18 @@ def fusao_ordenada(lista1, lista2):
 			return [lista2[0]] + fusao_ordenada(lista1, lista2[1:])
 
 #Exercicio 1.10
-def lista_subconjuntos(lista): 
+def lista_subconjuntos(lista):
 	if not lista:
-		return [[]]  
-	
-	elemento = lista[0]
-	subconjuntos_anteriores = lista_subconjuntos(lista[1:])
-
-	novos_subconjuntos = [subconjunto + [elemento] for subconjunto in subconjuntos_anteriores]
-
-	return subconjuntos_anteriores + novos_subconjuntos
+		return [[]]
+	else:
+		elemento = lista[0]
+		subconjuntos = lista_subconjuntos(lista[1:])
+		return concat(subconjuntos, [[elemento] + subset for subset in subconjuntos])
 
 
 #Exercicio 2.1
 primeiros = []
-segundos = []         # posso fazer isto??
+segundos = []         
 def separar(lista):
 	if not lista:
 		return primeiros, segundos
@@ -98,12 +95,13 @@ def separar(lista):
 ocorrencia = 0
 def remove_e_conta(lista, elem):
     if not lista:
-        return [], 0
-    if (lista[0] == elem):
-        return remove_e_conta(lista[1:], elem), ocorrencia + 1
+        return ([], 0)
+    if lista[0] == elem:
+        sublist, ocorrencia = remove_e_conta(lista[1:], elem)
+        return (sublist, ocorrencia + 1)
     else:
-        return [lista[0]] + remove_e_conta(lista[1:], elem), ocorrencia
-		
+        sublist, ocorrencia = remove_e_conta(lista[1:], elem)
+        return ([lista[0]] + sublist, ocorrencia)
 
 #Exercicio 3.1
 def cabeca(lista):
@@ -121,22 +119,27 @@ def cauda(lista):
 
 #Exercicio 3.3
 def juntar(l1, l2):
-	if len(l1) != len(l2):
+	if not l1 or not l2:
+		return []
+	elif len(l1) != len(l2):
 		return None
-	pares = list(zip(l1, l2))
-	return pares
+	else:
+		return [(l1[0],l2[0])] + juntar(l1[1:], l2[1:])
     
 
 #Exercicio 3.4
 def menor(lista):
 	if not lista:
 		return None
+	if len(lista) == 1:
+		return lista[0]
+	
+	menor_da_sublista = menor(lista[1:])
+
+	if lista[0] < menor_da_sublista:
+		return lista[0]
 	else:
-		min = lista[0]
-		for elem in lista:
-			if elem < min:
-				min = elem
-		return min
+		return menor_da_sublista
 	
 #Exercicio 3.6
 def max_min(lista):
