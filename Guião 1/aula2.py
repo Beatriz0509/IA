@@ -51,11 +51,11 @@ def menor_e_resto_ordem(lista, f):
     elif len(lista) == 1:
         return lista[0], []
     else:
-        menor = menor_ordem(lista[1:], f) 
+        menor, resto = menor_e_resto_ordem(lista[1:], f)
         if f(lista[0], menor):
             return lista[0], lista[1:]
         else:
-            return menor, [lista[0]] + lista.pop(lista.index(menor))
+            return menor, [lista[0]] + resto
 
 #Exercicio 5.2
 def ordenar_seleccao(lista, ordem):
