@@ -65,10 +65,12 @@ class SearchNode:
     def __init__(self,state,parent): 
         self.state = state
         self.parent = parent
+        self.depth = 0
     def __str__(self):
         return "no(" + str(self.state) + "," + str(self.parent) + ")"
     def __repr__(self):
         return str(self)
+    
 
 # Arvores de pesquisa
 class SearchTree:
@@ -87,6 +89,7 @@ class SearchTree:
             return [node.state]
         path = self.get_path(node.parent)
         path += [node.state]
+        node.depth = len(path) - 1
         return(path)
 
     # procurar a solucao
@@ -100,7 +103,8 @@ class SearchTree:
             for a in self.problem.domain.actions(node.state):
                 newstate = self.problem.domain.result(node.state,a)
                 newnode = SearchNode(newstate,node)
-                lnewnodes.append(newnode)
+                if newstate not in self.get_path(node):
+                    lnewnodes.append(newnode)
             self.add_to_open(lnewnodes)
         return None
 
@@ -113,3 +117,7 @@ class SearchTree:
         elif self.strategy == 'uniform':
             pass
 
+
+    @property 
+    def length(self):
+        return self.solution.depth
