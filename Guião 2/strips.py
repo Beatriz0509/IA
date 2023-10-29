@@ -93,19 +93,37 @@ class STRIPS(SearchDomain):
     # Result of a given "action" in a given "state"
     # ( returns None, if the action is not applicable in the state)
     def result(self, state, action):
-        pass
+        if not all(predicate in state for predicate in action.pc):
+            # If not all preconditions are satisfied, the action is not applicable
+            return None
+
+        # Calculate the resulting state after applying the action
+        new_state = state.copy()
+
+        # Remove negative effects
+        for predicate in action.neg:
+            if predicate in new_state:
+                new_state.remove(predicate)
+
+        # Add positive effects
+        for predicate in action.pos:
+            # Convert the predicate to a string for hashability
+            predicate_str = str(predicate)
+            if predicate_str not in new_state:
+                new_state.append(predicate_str)
+
+        return new_state
+
+    # Checks if a given "goal" is satisfied in a given "state"
+    def satisfies(self, state, goal):
+        # Check if all goal predicates are in the state
+        return all(predicate in state for predicate in goal)
 
     def cost(self, state, action):
         return 1
 
     def heuristic(self, state, goal):
         return 0
-
-    # Checks if a given "goal" is satisfied in a given "state"
-    def satisfies(self, state, goal):
-        pass
-
-
 
 # Auxiliary functions
 
